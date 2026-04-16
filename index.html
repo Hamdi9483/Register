@@ -493,22 +493,23 @@
   }
   
   // ============================================
-  // 4. دالة الحفظ في Supabase (مع تاريخ ووقت افتراضيين)
+  // 4. دالة الحفظ في Supabase (بدون تاريخ ووقت)
   // ============================================
   async function savePatientToDB(name, phone) {
     if (!supabaseClient) throw new Error('Supabase not initialized');
-    const today = new Date().toISOString().split('T')[0];
-    const nowTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    
+    // تم تعيين حقلي التاريخ والوقت إلى null لتركهما فارغين
     const { data, error } = await supabaseClient
       .from('appointments')
       .insert([{
         patient_name: name,
         phone: phone,
-        appointment_date: today,
-        appointment_time: nowTime,
+        appointment_date: null,      // لا تخزين للتاريخ
+        appointment_time: null,      // لا تخزين للوقت
         status: 'pending'
       }])
       .select();
+      
     if (error) throw error;
     return data[0];
   }
